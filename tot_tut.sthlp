@@ -70,7 +70,7 @@
 {p 8 8}{stata "ivregress 2sls apr z0_ (x0 = z2), vce(cluster clustvar)"}{p_end}
 
 {p 4 8}Simultaneous inference for ToT & TuT{p_end}
-{p 8 8}{stata "tot_tut apr Z choose_commitment, vce(cluster clustvar)"}{p_end}
+{p 8 8}{stata "tot_tut apr Z choose, vce(cluster clustvar)"}{p_end}
 
 
 {marker stored_results}{...}
