@@ -82,7 +82,7 @@
 
 {p2col 5 20 24 2: Scalars}{p_end}
 {synopt:{cmd:e(N)}}number of observations.{p_end}
-{synopt:{cmd:e(N)}}residual degrees of freedom.{p_end}
+{synopt:{cmd:e(df_r)}}residual degrees of freedom.{p_end}
   
 {p2col 5 20 24 2: Matrices}{p_end}
 {synopt:{cmd:e(b)}}coefficient fector.{p_end}
