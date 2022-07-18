@@ -91,7 +91,7 @@
 {marker references}{...}
 {title:References}
 
-{p 4 8}{browse "https://doi.org/10.1017/S0266466609990168": DiTraglia, McIntosh, Meza, Seira, Sadka.} "The limits of self-commitment and private paternalism". Working paper. {p_end}
+{p 4 8}{browse "https://isaacmeza.github.io/personal//files/donde.pdf": DiTraglia, McIntosh, Meza, Seira, Sadka.} "The limits of self-commitment and private paternalism". Working paper. {p_end}
 
 
 {marker authors}{...}
