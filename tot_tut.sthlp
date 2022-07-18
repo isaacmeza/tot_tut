@@ -25,7 +25,7 @@
 {marker description}{...}
 {title:Description}
 
-{p 4 8}{cmd:tot_tut} estimates jointly the treatment on the treated, treatment on the untreated, and the average treatment effect, exploiting a design with three arms: a control arm, a forced arm and a choice arm. The specification strategy involves estimating two 2sls regressions, and jointly obtaining errors. Details on the implementation can be found {browse "https://qyocwwdd4c.joplinusercontent.com/shares/7VacRZWj4uoFz6Qxtaqh8S#checklist-for-implementation":here}.
+{p 4 8}{cmd:tot_tut} estimates jointly the treatment on the treated, treatment on the untreated, and the average treatment effect, exploiting a design with three arms: a control arm, a forced arm and a choice arm. The specification strategy involves estimating two 2sls regressions, and jointly obtaining errors. Details on the implementation can be found {browse "https://qyocwwdd4c.joplinusercontent.com/shares/7VacRZWj4uoFz6Qxtaqh8S":here}.
 
 
 {marker arguments}{...}
