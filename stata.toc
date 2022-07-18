@@ -1,0 +1,6 @@
+v 3
+d TOT_TUT: Stata implementation for estimation of ToT & TuT using the design in "The limits of self-commitment and private paternalism"
+d           https://github.com/isaacmeza/tot_tut
+d
+
+p tot_tut

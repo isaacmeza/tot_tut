@@ -1,0 +1,13 @@
+v 3
+d STATA Package: TOT_TUT
+d 
+d Authors: Isaac Meza Lopez, CIE, ITAM, isaac.meza@berkeley.edu
+d 			Francis J. DiTraglia, Economics, Oxford, francis.ditraglia@economics.ox.ac.uk
+d          
+d
+d Distribution-Date: 20220717
+d 
+f tot_tut.ado
+f tot_tut.sthlp
+f tot_tut_commitment.dta
+d
