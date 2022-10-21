@@ -7,9 +7,8 @@ program tot_tut, eclass
 	
 	
 	gettoken var rest : varlist
-	gettoken Z choose : rest
+	gettoken Z choose_ : rest
 	
-	qui replace `choose' = 0 if missing(`choose')
 	marksample touse
 	
 	*Check randomization range 0-2
@@ -18,9 +17,11 @@ program tot_tut, eclass
 
 	
 	tempname Y X1 X0 W WPY WPX1i WPX0i theta1 theta0 theta1_0 theta xbhat1 xbhat0 U V Suu Svv Suv Svu WPU WPV cov1 cov0 cov1_0 vartottut cov
-	tempvar x0 x1 z0_ z0 z1 clustervar
+	tempvar choose x0 x1 z0_ z0 z1 clustervar
 	
-	
+	qui gen `choose' = `choose_'
+	qui replace `choose' = 0 if missing(`choose')
+
 	*Cluster - robust
     if `"`vce'"' != "" {
         my_vce_parse , vce(`vce') 
