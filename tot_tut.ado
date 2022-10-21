@@ -20,7 +20,7 @@ program tot_tut, eclass
 	tempvar choose x0 x1 z0_ z0 z1 clustervar
 	
 	qui gen `choose' = `choose_'
-	qui replace `choose' = 0 if missing(`choose')
+	qui replace `choose' = 0 if missing(`choose') 
 
 	*Cluster - robust
     if `"`vce'"' != "" {
