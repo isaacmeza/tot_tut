@@ -9,8 +9,8 @@ program tot_tut, eclass
 	gettoken var rest : varlist
 	gettoken Z choose : rest
 	
-	qui replace `choose' = 0 if missing(`choose')
 	marksample touse
+	qui replace `choose' = 0 if missing(`choose')
 	
 	*Check randomization range 0-2
 	
