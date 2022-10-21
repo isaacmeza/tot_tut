@@ -9,6 +9,7 @@ program tot_tut, eclass
 	gettoken var rest : varlist
 	gettoken Z choose : rest
 	
+	qui replace `choose' = 0 if missing(`choose')
 	marksample touse
 	
 	*Check randomization range 0-2
@@ -36,7 +37,7 @@ program tot_tut, eclass
 	
 	sort `clustervar' 
 	
-	gen `x0' = -(`Z'==2)*(`choose'==0 | missing(`choose'))
+	gen `x0' = -(`Z'==2)*(`choose'==0)
 	gen `x1' = (`Z'==2)*(`choose'==1)
 	gen `z0_' = -(`Z'==0)
 	gen `z0' = (`Z'==0)
