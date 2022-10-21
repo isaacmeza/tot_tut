@@ -7,10 +7,9 @@ program tot_tut, eclass
 	
 	
 	gettoken var rest : varlist
-	gettoken Z choose : rest
+	gettoken Z choose_ : rest
 	
 	marksample touse
-	qui replace `choose' = 0 if missing(`choose')
 	
 	*Check randomization range 0-2
 	
@@ -18,7 +17,7 @@ program tot_tut, eclass
 
 	
 	tempname Y X1 X0 W WPY WPX1i WPX0i theta1 theta0 theta1_0 theta xbhat1 xbhat0 U V Suu Svv Suv Svu WPU WPV cov1 cov0 cov1_0 vartottut cov
-	tempvar x0 x1 z0_ z0 z1 clustervar
+	tempvar x0 x1 z0_ z0 z1 choose clustervar
 	
 	
 	*Cluster - robust
@@ -37,6 +36,9 @@ program tot_tut, eclass
 	
 	sort `clustervar' 
 	
+	gen `choose' = `choose_'
+	replace `choose' = 0 if missing(`choose')
+
 	gen `x0' = -(`Z'==2)*(`choose'==0)
 	gen `x1' = (`Z'==2)*(`choose'==1)
 	gen `z0_' = -(`Z'==0)
