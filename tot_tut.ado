@@ -7,7 +7,7 @@ program tot_tut, eclass
 	
 	
 	gettoken var rest : varlist
-	gettoken Z choose_ : rest
+	gettoken Z choose : rest
 	
 	marksample touse
 	
@@ -17,11 +17,9 @@ program tot_tut, eclass
 
 	
 	tempname Y X1 X0 W WPY WPX1i WPX0i theta1 theta0 theta1_0 theta xbhat1 xbhat0 U V Suu Svv Suv Svu WPU WPV cov1 cov0 cov1_0 vartottut cov
-	tempvar choose x0 x1 z0_ z0 z1 clustervar
+	tempvar x0 x1 z0_ z0 z1 clustervar
 	
-	qui gen `choose' = `choose_'
-	qui replace `choose' = 0 if missing(`choose') 
-
+	
 	*Cluster - robust
     if `"`vce'"' != "" {
         my_vce_parse , vce(`vce') 
@@ -38,7 +36,7 @@ program tot_tut, eclass
 	
 	sort `clustervar' 
 	
-	gen `x0' = -(`Z'==2)*(`choose'==0)
+	gen `x0' = -(`Z'==2)*(`choose'==0 | missing(`choose'))
 	gen `x1' = (`Z'==2)*(`choose'==1)
 	gen `z0_' = -(`Z'==0)
 	gen `z0' = (`Z'==0)
