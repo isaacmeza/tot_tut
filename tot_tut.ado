@@ -1,4 +1,4 @@
-*! version 1.0.1  15jul2022
+*! version 1.0.2  24oct2022
 cap program drop tot_tut
 program tot_tut, eclass
 	version 17.0
@@ -8,9 +8,7 @@ program tot_tut, eclass
 	
 	gettoken var rest : varlist
 	gettoken Z choose : rest
-	
-	qui replace `choose' = 0 if missing(`choose')
-	marksample touse
+
 	
 	*Check randomization range 0-2
 	
@@ -18,9 +16,12 @@ program tot_tut, eclass
 
 	
 	tempname Y X1 X0 W WPY WPX1i WPX0i theta1 theta0 theta1_0 theta xbhat1 xbhat0 U V Suu Svv Suv Svu WPU WPV cov1 cov0 cov1_0 vartottut cov
-	tempvar x0 x1 z0_ z0 z1 clustervar
+	tempvar choose_ x0 x1 z0_ z0 z1 clustervar
 	
-	
+	gen `choose_' = `choose'
+	replace `choose' = 0 if missing(`choose')
+	marksample touse
+
 	*Cluster - robust
     if `"`vce'"' != "" {
         my_vce_parse , vce(`vce') 
@@ -113,12 +114,12 @@ program tot_tut, eclass
 	mata : `vartottut' = (1,0,0)*`vartottut'*(1\0\0)
 	
 	*Rearranging/stacking
-	mata : `cov' = (`cov'[2,2], `cov'[2,1], `cov'[2,4], `cov'[2,6], `cov'[2,3], -1	 \ ///
-					`cov'[1,2], `cov'[1,1], `cov'[1,4], `cov'[1,6], `cov'[1,3], -1	 \ ///
-					`cov'[4,2], `cov'[4,1], `cov'[4,4], `cov'[4,6], `cov'[4,3], -1	 \ ///
-					`cov'[6,2], `cov'[6,1], `cov'[6,4], `cov'[6,6], `cov'[6,3], -1	 \ ///
-					`cov'[3,2], `cov'[3,1], `cov'[3,4], `cov'[3,6], `cov'[3,3], -1	 \ ///
-						-1	  , 	-1	  , 	-1	   , 	-1	    , 		-1	, `vartottut')
+	mata : `cov' = (`cov'[2,2], `cov'[2,1], `cov'[2,4], `cov'[2,6], `cov'[2,3], 0	 \ ///
+					`cov'[1,2], `cov'[1,1], `cov'[1,4], `cov'[1,6], `cov'[1,3], 0	 \ ///
+					`cov'[4,2], `cov'[4,1], `cov'[4,4], `cov'[4,6], `cov'[4,3], 0	 \ ///
+					`cov'[6,2], `cov'[6,1], `cov'[6,4], `cov'[6,6], `cov'[6,3], 0	 \ ///
+					`cov'[3,2], `cov'[3,1], `cov'[3,4], `cov'[3,6], `cov'[3,3], 0	 \ ///
+						0	  , 	0	  , 	0	   , 	0	    , 		0	, `vartottut')
 							
 	mata : `theta' = (`theta1'[2,1], `theta1'[1,1], `theta0'[1,1], `theta1'[3,1], `theta0'[3,1], `theta1_0'[1,1])
 	
@@ -129,6 +130,8 @@ program tot_tut, eclass
 	matrix colnames `cov' = ATE ToT TuT E[Y1] E[Y0] ToT-TuT	
 	matrix rownames `cov' = ATE ToT TuT E[Y1] E[Y0] ToT-TuT	
 
+	*Renormalization
+	replace `choose' = `choose_'
 
 	*Display
 	qui count if `touse'
