@@ -25,7 +25,7 @@
 {marker description}{...}
 {title:Description}
 
-{p 4 8}{cmd:tot_tut} estimates jointly the treatment on the treated, treatment on the untreated, the average treatment effect, selection on gains, selection bias, and selection on the level, exploiting a design with three arms: a control arm, a forced arm and a choice arm. The specification strategy involves estimating two iv regressions per each selection estimand, and jointly obtaining errors. Details on the implementation can be found  in Section 5 and Appendix of the paper  {browse "https://isaacmeza.github.io/personal//files/donde.pdf" : "The limits of self-commitment and private paternalism"}. 
+{p 4 8}{cmd:tot_tut} estimates jointly the treatment on the treated, treatment on the untreated, the average treatment effect, selection on gains, selection bias, and selection on the level, exploiting a design with three arms: a control arm, a forced arm and a choice arm. The specification strategy involves estimating two iv regressions per each selection estimand, and jointly obtaining errors. Details on the implementation can be found  in Section 5 and Appendix of the paper  {browse "https://isaacmeza.github.io/personal//files/donde.pdf": "The limits of self-commitment and private paternalism"}. 
 
 Note : Jointly inference for selection on gains, selection bias, and selection on the level is not provided. 
 
@@ -100,4 +100,4 @@ Note : Jointly inference for selection on gains, selection bias, and selection o
 {title:Authors}
 
 {p 4 8}Meza Lopez Isaac; Harvard, Economics.
-{browse "mailto:isaacmezalopez@g.harvard.edu":isaac.meza@g.harvard.edu}.{p_end}
+{browse "mailto:isaacmezalopez@g.harvard.edu":isaacmezalopez@g.harvard.edu}.{p_end}
