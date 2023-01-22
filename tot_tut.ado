@@ -233,10 +233,10 @@ program tot_tut, eclass
 	di "ToT & TuT 2sls stacked regression            	Number of obs   =    `r(N)'"	
 	di " "
 	if "`robust'"=="robust" {
-	di "													 	(Robust std. err.)"
+	di "						(Robust std. err.)"
 	}
 	else {
-	di "									(Std. err. adjusted for `Nc' clusters)"
+	di "						(Std. err. adjusted for `Nc' clusters)"
 	}	
 	di " "
 	ereturn post `theta' `cov', esample(`touse') buildfvinfo obs(`N') 
