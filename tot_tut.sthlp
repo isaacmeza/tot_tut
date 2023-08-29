@@ -10,7 +10,7 @@
 
 {title:Title}
 
-{p 4 8}{cmd:tot_tut} {hline 2} Implementation for the estimation of treatment on the treated (ToT), treatment on the untreated (TuT) and the average treatment effect (ATE) jointly using the design introduced in "The limits of self-commitment and private paternalism". Other causal statistics of interest like the average selection bias and the average selection on the level are also provided. {p_end}
+{p 4 8}{cmd:tot_tut} {hline 2} Implementation for the estimation of treatment on the treated (ToT), treatment on the untreated (TuT) and the average treatment effect (ATE) jointly using the design introduced in "The controlled choice design and private paternalism in pawnshop borrowing". Other causal statistics of interest like the average selection bias and the average selection on the level are also provided. {p_end}
 
 {marker syntax}{...}
 {title:Syntax}
@@ -25,7 +25,7 @@
 {marker description}{...}
 {title:Description}
 
-{p 4 8}{cmd:tot_tut} estimates jointly the treatment on the treated, treatment on the untreated, the average treatment effect, selection on gains, selection bias, and selection on the level, exploiting a design with three arms: a control arm, a forced arm and a choice arm. The specification strategy involves estimating two iv regressions per each selection estimand, and jointly obtaining errors. Details on the implementation can be found  in Section 5 and Appendix of the paper - {browse "https://isaacmeza.github.io/personal//files/donde.pdf": The limits of self-commitment and private paternalism}. 
+{p 4 8}{cmd:tot_tut} estimates jointly the treatment on the treated, treatment on the untreated, the average treatment effect, selection on gains, selection bias, and selection on the level, exploiting a design with three arms: a control arm, a forced arm and a choice arm. The specification strategy involves estimating two iv regressions per each selection estimand, and jointly obtaining errors. Details on the implementation can be found in the paper "The controlled choice design and private paternalism in pawnshop borrowing" and its accompanying appendix. 
 
 Note : Jointly inference for selection on gains, selection bias, and selection on the level is not provided. 
 
@@ -54,7 +54,7 @@ Note : Jointly inference for selection on gains, selection bias, and selection o
 {marker examples}{...}
 {title: Examples}
 
-{title: "The limits of self-commitment and private paternalism"}
+{title: "The controlled choice design and private paternalism in pawnshop borrowing"}
 
 {p 4 8}Setup{p_end}
 {p 8 8}{stata "use tot_tut_commitment.dta, clear"}{p_end}
@@ -93,7 +93,7 @@ Note : Jointly inference for selection on gains, selection bias, and selection o
 {marker references}{...}
 {title:References}
 
-{p 4 8}{browse "https://isaacmeza.github.io/personal//files/donde.pdf": DiTraglia, McIntosh, Meza, Seira, Sadka.} "The limits of self-commitment and private paternalism". Working paper. {p_end}
+{p 4 8}{browse "https://isaacmeza.github.io/personal//files/donde.pdf": DiTraglia, McIntosh, Meza, Seira, Sadka.} "The controlled choice design and private paternalism in pawnshop borrowing". Working paper. {p_end}
 
 
 {marker authors}{...}

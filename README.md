@@ -1,6 +1,6 @@
 # TOT_TUT
 
-The `tot_tut` package provides Stata implementation for the estimation of treatment on the treated (ToT), treatment on the untreated (TuT) and the average treatment effect (ATE) jointly using the design introduced in "The limits of self-commitment and private paternalism".
+The `tot_tut` package provides Stata implementation for the estimation of treatment on the treated (ToT), treatment on the untreated (TuT) and the average treatment effect (ATE) jointly using the design introduced in "The controlled choice design and private paternalism in pawnshop borrowing".
 
 
 ## Stata Implementation

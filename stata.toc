@@ -1,5 +1,5 @@
 v 3
-d TOT_TUT: Stata implementation for estimation of ToT & TuT using the design in "The limits of self-commitment and private paternalism"
+d TOT_TUT: Stata implementation for estimation of ToT & TuT using the design in "The controlled choice design and private paternalism in pawnshop borrowing"
 d           https://github.com/isaacmeza/tot_tut
 d
 
