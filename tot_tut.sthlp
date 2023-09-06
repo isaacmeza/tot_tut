@@ -28,7 +28,7 @@
 {marker description}{...}
 {title:Description}
 
-{p 4 8}{cmd:tot_tut} estimates jointly the treatment on the treated (ToT), treatment on the untreated (TuT), the average treatment effect, selection on gains, selection bias, and selection on the level, exploiting a design with three arms: a control arm, a forced arm and a choice arm. The specification strategy involves estimating two iv regressions per each selection estimand, and jointly obtaining errors. Moreover, the command displays bounds for the ToT and TuT without imposing exclusion restriction, and where indicated, also p-values for the violation of the IV validity. Details on the implementation can be found in the paper "The controlled choice design and private paternalism in pawnshop borrowing" and its accompanying appendix. 
+{p 4 8}{cmd:tot_tut} estimates jointly the treatment on the treated (ToT), treatment on the untreated (TuT), the average treatment effect, selection on gains, selection bias, and selection on the level, exploiting a design with three arms: a control arm, a forced arm and a choice arm. The specification strategy involves estimating two iv regressions per each selection estimand, and jointly obtaining errors. Moreover, the command displays bounds for the ToT and TuT without imposing exclusion restriction (only for continuously supported dependent variables), and where indicated, also p-values for the violation of the IV validity. Details on the implementation can be found in the paper "The controlled choice design and private paternalism in pawnshop borrowing" and its accompanying appendix. 
 
 Note : Jointly inference for selection on gains, selection bias, and selection on the level is not provided. 
 

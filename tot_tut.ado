@@ -24,7 +24,7 @@ program tot_tut, eclass
 	}
 	
 	tempname Y Ybias Ylevel X1 X0 Xb1 Xb0 Xl1 Xl0 W Wb1 Wb0 Wl1 Wl0 WPY WPX1i WPX0i Wb1PYb Wb1PXb1i Wb0PYb Wb0PXb0i Wl1PYl Wl1PXl1i Wl0PYl Wl0PXl0i theta1 theta0 theta1_0 theta asb asl U V Ub1 Ub0 Ul1 Ul0 Suu Svv Suv Svu Sb1 Sb0 Sub Sl1 Sl0 Sul WPU WPV Wb1PUb1 Wb0PUb0 Wl1PUl1 Wl0PUl0 cov1 cov0 cov1_0 vartottut varasb varasl cov
-	tempvar choose_ ddd x0 x0_ x1 x1_ z0 z0_ z1 z2 uno_z1 uno_z0 yb yl clustervar ub_tut_fc lb_tut_fc ub_tot_fc lb_tot_fc ub_tut_fc_2 lb_tut_fc_2 ub_tot_fc_2 lb_tot_fc_2 pval_tot_fc_ pval_tut_fc_ pval_fc_ ub_tut_fc_1 lb_tut_fc_1 ub_tot_fc_1 lb_tot_fc_1 pval_ub_tut pval_lb_tut pval_ub_tot pval_lb_tot min_pval_tot min_pval_tut min_pval __drw  pval_tot_fc pval_tut_fc pval_fc
+	tempvar choose_ ddd x0 x0_ x1 x1_ z0 z0_ z1 z2 uno_z1 uno_z0 yb yl clustervar ub_tut_fc lb_tut_fc ub_tot_fc lb_tot_fc ub_tut_fc_2 lb_tut_fc_2 ub_tot_fc_2 lb_tot_fc_2 pval_tot_fc_ pval_tut_fc_ pval_fc_ ub_tut_fc_1 lb_tut_fc_1 ub_tot_fc_1 lb_tot_fc_1 pval_ub_tut pval_lb_tut pval_ub_tot pval_lb_tot min_pval_tot min_pval_tut min_pval __drw  pval_tot_fc pval_tut_fc pval_fc __nvals
 	
 	qui gen `choose_' = `choose'
 	qui replace `choose' = 0 if missing(`choose')
@@ -249,138 +249,143 @@ program tot_tut, eclass
     ereturn local cmd "tot_tut"	
 	ereturn display
 	
-	if "`pvals'"=="" {
-		*Bounds for ToT/TuT without exclusion
-		local tot = _b[ToT]
-		local tut = _b[TuT]
-		tot_tut_noexclusion `var' `Z' if e(sample), quantile(`qq') tot(`tot') tut(`tut')
-	}
-	else {
-		qui {
-		gen `ub_tut_fc' = .
-		gen `lb_tut_fc' = .
-		gen `ub_tot_fc' = .
-		gen `lb_tot_fc' = .
-		 
-		gen `ub_tut_fc_2' = .
-		gen `lb_tut_fc_2' = .
-		gen `ub_tot_fc_2' = .
-		gen `lb_tot_fc_2' = .
-
-		gen `pval_tot_fc_' = .
-		gen `pval_tut_fc_' = .
-		gen `pval_fc_' = .
-		
-		local tot = _b[ToT]
-		local tut = _b[TuT]
-		qui tot_tut_noexclusion `var' `Z' if e(sample), quantile(`qq') tot(`tot') tut(`tut')
-		
-		local ub_tut = `r(ub_tut)'
-		local lb_tut = `r(lb_tut)'
-		local ub_tot = `r(ub_tot)'
-		local lb_tot = `r(lb_tot)'
-		
-		*1. Estimate the vector of parameters θ in the original sample.
-		local ub_tut_validity = `r(ub_tut_validity)'
-		local lb_tut_validity = `r(lb_tut_validity)' 
-		local ub_tot_validity = `r(ub_tot_validity)'
-		local lb_tot_validity = `r(lb_tot_validity)'
-
-		*2. Draw B1 bootstrap samples of size n from the original sample.
-		noi di " "
-		noi _dots 0, title(B1 bootstrap repetitions) reps(`b_rep1')
-		forvalues i = 1/`b_rep1' {
-			qui {	
-			preserve
-			bsample if e(sample), cluster(`clustervar')
-			mata: mata clear
-			putmata `Y' = `var' `X1' = (`x1' `z1' 1) `X0' = (`x0' `z0_' 1) `W' = (`z1' `z0' 1)
-			*'Projection' matrices
-			mata : `WPY' = quadcross(`W',`Y')
-			mata : `WPX1i' = pinv(quadcross(`W',`X1'))
-			mata : `WPX0i' = pinv(quadcross(`W',`X0'))
-				*ToT
-			mata : `theta1' = (`WPX1i'*`WPY')
-				*TuT
-			mata : `theta0' = (`WPX0i'*`WPY')	
-			restore
-			mata : st_matrix("`theta1'", `theta1')
-			mata : st_matrix("`theta0'", `theta0')
-			local tot = `theta1'[1,1]
-			local tut = `theta0'[1,1]
-
+	*Identify if continuous variable
+	by `var', sort: gen `__nvals' = _n == 1 
+	qui count if `__nvals'
+	if `r(N)'>=100 {
+		if "`pvals'"=="" {
+			*Bounds for ToT/TuT without exclusion
+			local tot = _b[ToT]
+			local tut = _b[TuT]
 			tot_tut_noexclusion `var' `Z' if e(sample), quantile(`qq') tot(`tot') tut(`tut')
-			*3. In each bootstrap sample, compute the fully recentered vector θ^f_b 
-			replace `ub_tut_fc' = `r(ub_tut_validity)'-`ub_tut_validity' in `i'
-			replace `lb_tut_fc' = `r(lb_tut_validity)'-`lb_tut_validity' in `i'
-			replace `ub_tot_fc' = `r(ub_tot_validity)'-`ub_tot_validity' in `i'
-			replace `lb_tot_fc' = `r(lb_tot_validity)'-`lb_tot_validity' in `i'
+		}
+		else {
+			qui {
+			gen `ub_tut_fc' = .
+			gen `lb_tut_fc' = .
+			gen `ub_tot_fc' = .
+			gen `lb_tot_fc' = .
+			 
+			gen `ub_tut_fc_2' = .
+			gen `lb_tut_fc_2' = .
+			gen `ub_tot_fc_2' = .
+			gen `lb_tot_fc_2' = .
+
+			gen `pval_tot_fc_' = .
+			gen `pval_tut_fc_' = .
+			gen `pval_fc_' = .
+			
+			local tot = _b[ToT]
+			local tut = _b[TuT]
+			qui tot_tut_noexclusion `var' `Z' if e(sample), quantile(`qq') tot(`tot') tut(`tut')
+			
+			local ub_tut = `r(ub_tut)'
+			local lb_tut = `r(lb_tut)'
+			local ub_tot = `r(ub_tot)'
+			local lb_tot = `r(lb_tot)'
+			
+			*1. Estimate the vector of parameters θ in the original sample.
+			local ub_tut_validity = `r(ub_tut_validity)'
+			local lb_tut_validity = `r(lb_tut_validity)' 
+			local ub_tot_validity = `r(ub_tot_validity)'
+			local lb_tot_validity = `r(lb_tot_validity)'
+
+			*2. Draw B1 bootstrap samples of size n from the original sample.
+			noi di " "
+			noi _dots 0, title(B1 bootstrap repetitions) reps(`b_rep1')
+			forvalues i = 1/`b_rep1' {
+				qui {	
+				preserve
+				bsample if e(sample), cluster(`clustervar')
+				mata: mata clear
+				putmata `Y' = `var' `X1' = (`x1' `z1' 1) `X0' = (`x0' `z0_' 1) `W' = (`z1' `z0' 1)
+				*'Projection' matrices
+				mata : `WPY' = quadcross(`W',`Y')
+				mata : `WPX1i' = pinv(quadcross(`W',`X1'))
+				mata : `WPX0i' = pinv(quadcross(`W',`X0'))
+					*ToT
+				mata : `theta1' = (`WPX1i'*`WPY')
+					*TuT
+				mata : `theta0' = (`WPX0i'*`WPY')	
+				restore
+				mata : st_matrix("`theta1'", `theta1')
+				mata : st_matrix("`theta0'", `theta0')
+				local tot = `theta1'[1,1]
+				local tut = `theta0'[1,1]
+
+				tot_tut_noexclusion `var' `Z' if e(sample), quantile(`qq') tot(`tot') tut(`tut')
+				*3. In each bootstrap sample, compute the fully recentered vector θ^f_b 
+				replace `ub_tut_fc' = `r(ub_tut_validity)'-`ub_tut_validity' in `i'
+				replace `lb_tut_fc' = `r(lb_tut_validity)'-`lb_tut_validity' in `i'
+				replace `ub_tot_fc' = `r(ub_tot_validity)'-`ub_tot_validity' in `i'
+				replace `lb_tot_fc' = `r(lb_tot_validity)'-`lb_tot_validity' in `i'
+				}
+				noi _dots `i' 0	
 			}
-			noi _dots `i' 0	
-		}
 
-		*4. Estimate the vector of p-values under full recentering
-		gen `ub_tut_fc_1' = `ub_tut_fc'>`ub_tut_validity' if !missing(`ub_tut_fc')
-		gen `lb_tut_fc_1' = `lb_tut_fc'>`lb_tut_validity' if !missing(`lb_tut_fc')
-		gen `ub_tot_fc_1' = `ub_tot_fc'>`ub_tot_validity' if !missing(`ub_tot_fc')
-		gen `lb_tot_fc_1' = `lb_tot_fc'>`lb_tot_validity' if !missing(`lb_tot_fc')
+			*4. Estimate the vector of p-values under full recentering
+			gen `ub_tut_fc_1' = `ub_tut_fc'>`ub_tut_validity' if !missing(`ub_tut_fc')
+			gen `lb_tut_fc_1' = `lb_tut_fc'>`lb_tut_validity' if !missing(`lb_tut_fc')
+			gen `ub_tot_fc_1' = `ub_tot_fc'>`ub_tot_validity' if !missing(`ub_tot_fc')
+			gen `lb_tot_fc_1' = `lb_tot_fc'>`lb_tot_validity' if !missing(`lb_tot_fc')
 
-		egen `pval_ub_tut' = mean(`ub_tut_fc_1') if !missing(`ub_tut_fc_1')
-		egen `pval_lb_tut' = mean(`lb_tut_fc_1') if !missing(`lb_tut_fc_1')
-		egen `pval_ub_tot' = mean(`ub_tot_fc_1') if !missing(`ub_tot_fc_1')
-		egen `pval_lb_tot' = mean(`lb_tot_fc_1') if !missing(`lb_tot_fc_1')
+			egen `pval_ub_tut' = mean(`ub_tut_fc_1') if !missing(`ub_tut_fc_1')
+			egen `pval_lb_tut' = mean(`lb_tut_fc_1') if !missing(`lb_tut_fc_1')
+			egen `pval_ub_tot' = mean(`ub_tot_fc_1') if !missing(`ub_tot_fc_1')
+			egen `pval_lb_tot' = mean(`lb_tot_fc_1') if !missing(`lb_tot_fc_1')
 
 
-		*5. Compute the minimum p-values under full recentering
-		gen `min_pval_tot' = min(`pval_ub_tot', `pval_lb_tot')
-		gen `min_pval_tut' = min(`pval_ub_tut', `pval_lb_tut')
-		gen `min_pval' = min(`min_pval_tot', `min_pval_tut')
+			*5. Compute the minimum p-values under full recentering
+			gen `min_pval_tot' = min(`pval_ub_tot', `pval_lb_tot')
+			gen `min_pval_tut' = min(`pval_ub_tut', `pval_lb_tut')
+			gen `min_pval' = min(`min_pval_tot', `min_pval_tut')
 
-		*6. Draw B2 values from the distributions of θ^f_b 
-		gen `__drw' = runiformint(1, `b_rep1') if _n<=`b_rep2'
+			*6. Draw B2 values from the distributions of θ^f_b 
+			gen `__drw' = runiformint(1, `b_rep1') if _n<=`b_rep2'
 
-		noi di " "
-		noi _dots 0, title(B2 bootstrap repetitions) reps(`b_rep2')
-		forvalues j = 1/`b_rep2' {
-			local b2 = `__drw'[`j']
-			replace `ub_tut_fc_2' = `ub_tut_fc'>`ub_tut_fc'[`b2'] if !missing(`ub_tut_fc')
-			replace `lb_tut_fc_2' = `lb_tut_fc'>`lb_tut_fc'[`b2'] if !missing(`lb_tut_fc')
-			replace `ub_tot_fc_2' = `ub_tot_fc'>`ub_tot_fc'[`b2'] if !missing(`ub_tot_fc')
-			replace `lb_tot_fc_2' = `lb_tot_fc'>`lb_tot_fc'[`b2'] if !missing(`lb_tot_fc')
-			
-			cap drop `pval_ub_tut' `pval_lb_tut' `pval_ub_tot' `pval_lb_tot'
-			egen `pval_ub_tut' = mean(`ub_tut_fc_2') 
-			egen `pval_lb_tut' = mean(`lb_tut_fc_2') 
-			egen `pval_ub_tot' = mean(`ub_tot_fc_2') 
-			egen `pval_lb_tot' = mean(`lb_tot_fc_2') 
-			
-			*7. In each bootstrap sample, compute the minimum p-values of B.f
-			replace `pval_tot_fc_' = min(`pval_ub_tot', `pval_lb_tot')<=`min_pval_tot'[1] in `j'
-			replace `pval_tut_fc_' = min(`pval_ub_tut', `pval_lb_tut')<=`min_pval_tut'[1] in `j'
-			replace `pval_fc_' = min(`min_pval_tot', `min_pval_tut')<=`min_pval'[1] in `j'
-			
-			noi _dots `j' 0	
-		}
-
-		*8. Compute the p-values of the B.f tests by the share of bootstrapped minimum p-values that are smaller than the respective minimum p-value of the original sample
-		egen `pval_tot_fc' = mean(`pval_tot_fc_') if _n<=`b_rep2'
-		egen `pval_tut_fc' = mean(`pval_tut_fc_') if _n<=`b_rep2'
-		egen `pval_fc' = mean(`pval_fc_') if _n<=`b_rep2'
-		}
-		
-		ereturn scalar pval_tot = `pval_tot_fc'[1]
-		ereturn scalar pval_tut = `pval_tut_fc'[1]
-		ereturn scalar pval_tot_tut = `pval_fc'[1]
-		
-		di " "
-		di as text "-------------+----------------------------------------------------------------"
-		di as text "             | Bounds without exclusion     	| p-value for IV violation   	  	  "
-		di as text "-------------+----------------------------------------------------------------"
-		di as text "         ToT | [`=round(`lb_tot',.01)' , `=round(`ub_tot',.01)']			|		`=round(`e(pval_tot)',0.01)'"
-		di as text " "	
-		di as text "         TuT | [`=round(`lb_tut',.01)' , `=round(`ub_tut',.01)']			|		`=round(`e(pval_tut)',0.01)'"
-		di as text "-------------+----------------------------------------------------------------"
+			noi di " "
+			noi _dots 0, title(B2 bootstrap repetitions) reps(`b_rep2')
+			forvalues j = 1/`b_rep2' {
+				local b2 = `__drw'[`j']
+				replace `ub_tut_fc_2' = `ub_tut_fc'>`ub_tut_fc'[`b2'] if !missing(`ub_tut_fc')
+				replace `lb_tut_fc_2' = `lb_tut_fc'>`lb_tut_fc'[`b2'] if !missing(`lb_tut_fc')
+				replace `ub_tot_fc_2' = `ub_tot_fc'>`ub_tot_fc'[`b2'] if !missing(`ub_tot_fc')
+				replace `lb_tot_fc_2' = `lb_tot_fc'>`lb_tot_fc'[`b2'] if !missing(`lb_tot_fc')
 				
+				cap drop `pval_ub_tut' `pval_lb_tut' `pval_ub_tot' `pval_lb_tot'
+				egen `pval_ub_tut' = mean(`ub_tut_fc_2') 
+				egen `pval_lb_tut' = mean(`lb_tut_fc_2') 
+				egen `pval_ub_tot' = mean(`ub_tot_fc_2') 
+				egen `pval_lb_tot' = mean(`lb_tot_fc_2') 
+				
+				*7. In each bootstrap sample, compute the minimum p-values of B.f
+				replace `pval_tot_fc_' = min(`pval_ub_tot', `pval_lb_tot')<=`min_pval_tot'[1] in `j'
+				replace `pval_tut_fc_' = min(`pval_ub_tut', `pval_lb_tut')<=`min_pval_tut'[1] in `j'
+				replace `pval_fc_' = min(`min_pval_tot', `min_pval_tut')<=`min_pval'[1] in `j'
+				
+				noi _dots `j' 0	
+			}
+
+			*8. Compute the p-values of the B.f tests by the share of bootstrapped minimum p-values that are smaller than the respective minimum p-value of the original sample
+			egen `pval_tot_fc' = mean(`pval_tot_fc_') if _n<=`b_rep2'
+			egen `pval_tut_fc' = mean(`pval_tut_fc_') if _n<=`b_rep2'
+			egen `pval_fc' = mean(`pval_fc_') if _n<=`b_rep2'
+			}
+			
+			ereturn scalar pval_tot = `pval_tot_fc'[1]
+			ereturn scalar pval_tut = `pval_tut_fc'[1]
+			ereturn scalar pval_tot_tut = `pval_fc'[1]
+			
+			di " "
+			di as text "-------------+----------------------------------------------------------------"
+			di as text "             | Bounds without exclusion     	| p-value for IV violation   	  	  "
+			di as text "-------------+----------------------------------------------------------------"
+			di as text "         ToT | [`=round(`lb_tot',.01)' , `=round(`ub_tot',.01)']			|		`=round(`e(pval_tot)',0.01)'"
+			di as text " "	
+			di as text "         TuT | [`=round(`lb_tut',.01)' , `=round(`ub_tut',.01)']			|		`=round(`e(pval_tut)',0.01)'"
+			di as text "-------------+----------------------------------------------------------------"
+					
+		}
 	}
 	
 end
