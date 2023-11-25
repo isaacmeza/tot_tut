@@ -213,7 +213,7 @@ program tot_tut, eclass
 						0	  , 	0	  , 	0	   , 	0	    , 		0	, 0 , `varasb' , 0 \ ///
 						0	  , 	0	  , 	0	   , 	0	    , 		0	, 0 , 0 , `varasl')
 							
-	mata : `theta' = (`theta1'[2,1], `theta1'[1,1], `theta0'[1,1], `theta1'[3,1], `theta0'[3,1], `theta1_0'[1,1], `asb', `asl')
+	mata : `theta' = (`theta1'[2,1], `theta1'[1,1], `theta0'[1,1], `theta0'[3,1],`theta1'[3,1], `theta1_0'[1,1], `asb', `asl')
 	
 	mata : st_matrix("`theta'", `theta')
 	mata : st_matrix("`cov'", `cov')
